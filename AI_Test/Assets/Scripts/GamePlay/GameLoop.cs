@@ -12,22 +12,23 @@
 
         #region Properties
         private float m_TotalTime = 0;
-        private List<ISystem> m_Systems;
         #endregion
 
         #region Unity_Callback
         private void Start()
         {
-            m_Systems = new List<ISystem>();
+            GameScene.OnInit();
         }
         private void Update()
         {
+            if (!Application.isPlaying) return;
+
             m_TotalTime += Time.deltaTime;
-
-            foreach (var system in m_Systems)
-                system.Update(m_TotalTime);
-
-
+            GameScene.OnUpdate(m_TotalTime, Time.deltaTime);
+        }
+        private void OnApplicationQuit()
+        {
+            GameScene.OnExit();
         }
         #endregion
 

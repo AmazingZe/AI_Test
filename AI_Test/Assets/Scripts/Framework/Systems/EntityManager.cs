@@ -1,53 +1,54 @@
 ﻿namespace GameFramework
 {
+    using System;
+    using System.Collections.Generic;
+
     using GameUtils;
 
     public class EntityManager : Singleton<EntityManager>
     {
         #region Properties
-        private int m_EntityNum = 10;
-        private int m_FirstFree = 0;
-
-        private Entity[] m_Entities; //Todo:Pool
+        private Dictionary<int, EntityData> m_EntityDatas;
         #endregion
 
         #region Public_API
-        public void Update(float deltaTime)
-        {
-
-            //Update Position
-            for (int i = 0; i < m_FirstFree; i++)
-            {
-                var curPosition = m_Entities[i].transform.position;
-                curPosition += deltaTime * m_Entities[i].curVelocity;
-                m_Entities[i].transform.position = curPosition;
-            }
-        }
-        
-        public Entity Add()
-        {
-            if(m_FirstFree >= m_EntityNum)
-            {
-
-            }
-        }
+        public static void Update(float targetTime) { Instance._Update(targetTime); }
+        public static EntityData GetEntityDataWithID(int id) { return Instance._GetEntityDataWithID(id); }
+        public static void Create() { Instance._Create(); }
         #endregion
 
-        #region ISingleton_API
-        private EntityManager() { }
-
-        public override void OnInit()
+        private EntityData _GetEntityDataWithID(int id)
         {
-            m_Entities = new Entity[m_EntityNum];
-            for (int i = 0; i < m_EntityNum; i++) //Todo:Pool
-                m_Entities[i] = new Entity();
+            EntityData retMe;
+
+            if (m_EntityDatas.TryGetValue(id, out retMe))
+                return retMe;
+
+            return null;
         }
 
-        protected override void _OnRelease()
+        private void _Create()
         {
 
+        }
+
+        #region Singleton_API
+        private EntityManager() { }
+        public override void OnInit()
+        {
+            m_EntityDatas = new Dictionary<int, EntityData>();
+        }
+        protected override void _OnRelease()
+        {
             base._OnRelease();
         }
         #endregion
+
+        private void _Update(float targetTime)
+        {
+
+        }
     }
+
+
 }

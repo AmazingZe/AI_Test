@@ -5,7 +5,6 @@
     public class SafePool<T> : Singleton<SafePool<T>> where T : class, IPoolable, new ()
     {
         private static object m_Lock = new object();
-
         private HashSet<T> m_Check;
 
         #region Public_API
