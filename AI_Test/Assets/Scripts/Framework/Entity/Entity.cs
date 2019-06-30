@@ -15,9 +15,7 @@
         #region Public_API
         public void Update(float deltaTime)
         {
-            var data = EntityManager.GetEntityDataWithID(m_Id);
-
-
+            
         }
         #endregion
 

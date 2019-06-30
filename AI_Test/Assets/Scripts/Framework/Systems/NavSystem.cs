@@ -2,7 +2,7 @@
 {
     using GameCore.Pathfinding;
 
-    public class NavSystem : ISystem
+    public sealed class NavSystem : ISystem
     {
 
 
@@ -18,6 +18,11 @@
         void ISystem.Update(float targetTime)
         {
             
+        }
+
+        void ISystem.OnNotice()
+        {
+
         }
         #endregion
 

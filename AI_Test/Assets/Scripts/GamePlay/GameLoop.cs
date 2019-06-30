@@ -17,7 +17,11 @@
         #region Unity_Callback
         private void Start()
         {
-            GameScene.OnInit();
+            DontDestroyOnLoad(gameObject);
+
+            var gameScene = GameScene.Instance;
+            if (!gameScene.TryOpenScene(SceneType.Test))
+                gameScene.AddScene(SceneType.Test, new Scene_Test());
         }
         private void Update()
         {
@@ -28,7 +32,7 @@
         }
         private void OnApplicationQuit()
         {
-            GameScene.OnExit();
+            GameScene.Instance.OnRelease();
         }
         #endregion
 
