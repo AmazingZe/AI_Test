@@ -19,12 +19,11 @@
         }
         public override void OnUpdate(float totalTime, float deltaTime)
         {
-            
+            EntityManager.Update(totalTime, deltaTime);
         }
         public override void OnExit()
         {
-            
-
+            EntityManager.OnRelease();
         }
 
 
