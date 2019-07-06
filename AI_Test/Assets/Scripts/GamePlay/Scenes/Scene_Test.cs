@@ -15,7 +15,7 @@
         public override string SceneName { get { return m_SceneName; } }
         public override void OnInit()
         {
-            
+            var instance = EntityManager.Instance;
         }
         public override void OnUpdate(float totalTime, float deltaTime)
         {

@@ -6,24 +6,39 @@
 
     public class Entity : IPoolable
     {
+        public const int EntityNotInScene = -1;
+
         #region Properties
         private int m_Id;
 
-        public Transform transform;
+        private Transform m_Transform;
         #endregion
 
-        #region Public_API
-        public void Update(float deltaTime)
+        public int ID { get { return m_Id; } }
+        public Transform Transform { get { return m_Transform; } }
+
+        public Entity(int id, GameObject obj)
         {
-            
+            m_Id = id;
+
+            m_Transform = obj.transform;
         }
-        #endregion
 
         #region IPoolable_API
         public void Recycle()
         {
-            transform = null;
+            m_Id = EntityNotInScene;
+
+            m_Transform = null;
         }
         #endregion
+    }
+
+    public enum EntityType
+    {
+        Player,
+        Bot,
+        Tool,
+        Trap
     }
 }

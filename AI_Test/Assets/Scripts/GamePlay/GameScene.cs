@@ -19,6 +19,10 @@
         #endregion
 
         #region Public_APIs
+        public void LoadAsset()
+        {
+
+        }
         public Scene CurScene { get { return m_CurScene; } }
 
         public bool TryOpenScene(SceneType sceneType)
