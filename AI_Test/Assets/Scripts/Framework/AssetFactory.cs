@@ -1,29 +1,51 @@
 ﻿namespace GameFramework
 {
-    using GameRuntime;
+    using GameUtils;
 
     using UnityEngine;
 
+    using System;
     using System.Collections.Generic;
 
-    public class AssetFactory : MonoSingleton<AssetFactory>
+    public class AssetFactory : Singleton<AssetFactory>
     {
-        private Dictionary<EntityType, Dictionary<int, Object>> m_Prefabs;
+        private const string PrefabPath = "Prefabs/";
 
-        public void LoadAsset(EntityType entityType, int type)
+        private Dictionary<EntityType, Dictionary<int, UnityEngine.Object>> m_Prefabs;
+
+        public GameObject LoadChar(PlayerType type)
         {
-            var prefabPool = m_Prefabs[entityType];
+            UnityEngine.Object instantiateMe;
+            var prefabPool = m_Prefabs[EntityType.Player];
+            if (!prefabPool.TryGetValue((int)type, out instantiateMe))
+            {
+                switch (type)
+                {
+                    case PlayerType.Test:
+                        instantiateMe = Resources.Load<UnityEngine.Object>(PrefabPath + "Test_Prefab");
+                        break;
+                    default:
+                        throw new Exception(GameConst.InvalidEntityType);
+                }
+                prefabPool.Add((int)type, instantiateMe);
+            }
+            GameObject retMe = MonoBehaviour.Instantiate(instantiateMe) as GameObject;
+            return retMe;
         }
 
         #region Singleton_APIs
-        protected override void OnInit()
+        private AssetFactory() { }
+        public override void OnInit()
         {
-            m_Prefabs = new Dictionary<EntityType, Dictionary<int, Object>>();
+            m_Prefabs = new Dictionary<EntityType, Dictionary<int, UnityEngine.Object>>();
+            System.Array values = System.Enum.GetValues(typeof(EntityType));
+            foreach (var value in values)
+                m_Prefabs.Add((EntityType)value, new Dictionary<int, UnityEngine.Object>());
         }
-        public override void OnRelease()
+        protected override void _OnRelease()
         {
 
-            base.OnRelease();
+            base._OnRelease();
         }
         #endregion
     }

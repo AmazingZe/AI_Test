@@ -10,45 +10,79 @@
     public sealed class EntityManager : Singleton<EntityManager>
     {
         private const int InitNum = 10;
+        private static int m_EntityID = 0;
 
-        private NavSystem m_NavSystem; 
         #region Properties
-        private Dictionary<int, GameObject> m_Players;
+        private Scene m_Scene;
+        private Dictionary<int, Entity> m_Entities;
+
+        public Scene CurScene
+        {
+            set { m_Scene = value; }
+        }
         #endregion
 
         #region Public_API
-        public static void AddEntity(EntityType type, object param)
+        public int CreateEntity(EntityType type, BaseParam param)
         {
+            param.ID = m_EntityID++;
             switch (type)
             {
                 case EntityType.Bot:
-                    Instance.AddBot(param);
+                    AddBot(param);
                     break;
                 case EntityType.Trap:
-                    Instance.AddTrap(param);
+                    AddTrap(param);
                     break;
                 case EntityType.Tool:
-                    Instance.AddTool(param);
+                    AddTool(param);
                     break;
                 case EntityType.Player:
                     var buildParam = param as CharParam;
-                    Instance.AddPlayer(buildParam);
+
+                    AddPlayer(buildParam);
                     break;
                 default:
                     throw new Exception(GameConst.InvalidEntityType);
             }
-        }
 
+            return m_EntityID - 1;
+        }
+        private Entity AddEntity(GameObject obj, int entityID)
+        {
+            var newEntity = Pool<Entity>.Allocate();
+
+            newEntity.ID = entityID;
+            newEntity.Transform = obj.transform;
+
+            m_Entities.Add(entityID, newEntity);
+
+            m_Scene.AddObject(obj, entityID);
+
+            return newEntity;
+        }
+        public void RemoveEntity(int id)
+        {
+
+
+            m_Scene.RemoveObject(id);
+        }
+        
         public static void Update(float totalTime, float deltaTime)
         {
             Instance._Update(totalTime, deltaTime);
         }
         #endregion
         
-        private int AddPlayer(CharParam param)
+        // Logic-Entity
+        private void AddPlayer(CharParam param)
         {
+            var obj =  param.LoadAsset();
+            var entity = AddEntity(obj, param.ID);
 
-            return param.ID;
+            param.SetAI(entity);
+
+            CharParam.Recycle(ref param);
         }
         private void AddBot(object param)
         {
@@ -72,11 +106,11 @@
         private EntityManager() { }
         public override void OnInit()
         {
-            m_Players = new Dictionary<int, GameObject>(InitNum);
+            m_Entities = new Dictionary<int, Entity>(InitNum);
         }
         protected override void _OnRelease()
         {
-            m_Players.Clear();
+            m_Entities.Clear();
 
             base._OnRelease();
         }

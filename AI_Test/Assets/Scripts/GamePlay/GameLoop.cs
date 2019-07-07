@@ -12,6 +12,7 @@
 
         #region Properties
         private float m_TotalTime = 0;
+        private bool m_Ready = false;
         #endregion
 
         #region Unity_Callback
@@ -22,10 +23,11 @@
             var gameScene = GameScene.Instance;
             if (!gameScene.TryOpenScene(SceneType.Test))
                 gameScene.AddScene(SceneType.Test, new Scene_Test());
+            m_Ready = true;
         }
         private void Update()
         {
-            if (!Application.isPlaying) return;
+            if (!Application.isPlaying && m_Ready == false) return;
 
             m_TotalTime += Time.deltaTime;
             GameScene.OnUpdate(m_TotalTime, Time.deltaTime);

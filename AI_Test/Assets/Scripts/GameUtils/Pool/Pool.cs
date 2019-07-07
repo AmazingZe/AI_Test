@@ -15,13 +15,11 @@
         {
             return Instance._Allocate();
         }
-        public static void Recycle(ref T item)
+        public static void Recycle(T item)
         {
             if (ReferenceEquals(item, null)) return;
 
             Instance._Recycle(item);
-
-            item = null;
         }
         #endregion
 

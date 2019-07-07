@@ -1,7 +1,5 @@
 ﻿namespace GameRuntime
 {
-    using GameUtils;
-
     using UnityEngine.SceneManagement;
 
     using System.Collections.Generic;
@@ -11,30 +9,26 @@
         private const int MaxSceneNum = 3;
 
         #region Properties
-        private Dictionary<SceneType, Scene> m_Scenes;
+        private Dictionary<SceneType, GameFramework.Scene> m_Scenes;
 
         private SceneType m_CurType;
-        private Scene m_CurScene;
-        private Scene m_NextScene;
+        private GameFramework.Scene m_CurScene;
+        private GameFramework.Scene m_NextScene;
         #endregion
 
         #region Public_APIs
-        public void LoadAsset()
-        {
-
-        }
-        public Scene CurScene { get { return m_CurScene; } }
+        public GameFramework.Scene CurScene { get { return m_CurScene; } }
 
         public bool TryOpenScene(SceneType sceneType)
         {
-            Scene scene;
+            GameFramework.Scene scene;
             if (!m_Scenes.TryGetValue(sceneType, out scene))
                 return false;
 
             m_NextScene = scene;
             return true;
         }
-        public void AddScene(SceneType sceneType, Scene newScene)
+        public void AddScene(SceneType sceneType, GameFramework.Scene newScene)
         {
             m_Scenes.Add(sceneType, newScene);
             m_NextScene = newScene;
@@ -48,7 +42,7 @@
         #region Singleton_APIs
         protected override void OnInit()
         {
-            m_Scenes = new Dictionary<SceneType, Scene>();
+            m_Scenes = new Dictionary<SceneType, GameFramework.Scene>();
         }
         public override void OnRelease()
         {
@@ -71,8 +65,8 @@
                     m_CurScene.OnExit();
 
                 SceneManager.LoadScene(m_NextScene.SceneName);
-                m_NextScene.OnInit();
                 m_CurScene = m_NextScene;
+                m_CurScene.OnInit();
                 m_NextScene = null;
             }
 

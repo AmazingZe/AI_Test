@@ -14,14 +14,15 @@
         private Transform m_Transform;
         #endregion
 
-        public int ID { get { return m_Id; } }
-        public Transform Transform { get { return m_Transform; } }
-
-        public Entity(int id, GameObject obj)
+        public int ID
         {
-            m_Id = id;
-
-            m_Transform = obj.transform;
+            get { return m_Id; }
+            set { m_Id = value; }
+        }
+        public Transform Transform
+        {
+            get { return m_Transform; }
+            set { m_Transform = value; }
         }
 
         #region IPoolable_API

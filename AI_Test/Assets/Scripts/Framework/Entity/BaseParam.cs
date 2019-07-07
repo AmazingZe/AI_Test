@@ -20,7 +20,8 @@
             }
         }
 
-        public abstract void SetAI();
+        public abstract GameObject LoadAsset();
+        public abstract void SetAI(Entity entity);
 
         #region IPoolable
         public virtual void Recycle()

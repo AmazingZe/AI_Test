@@ -1,7 +1,5 @@
 ﻿namespace GameFramework
 {
-    using System;
-
     using UnityEngine;
 
     using GameUtils;
@@ -12,15 +10,20 @@
         public const int CharTypeMask = 7 << CharTypeOffset;
         #region Pools
         
-        public static CharParam Create(int entityID, Vector3 position, PlayerType playerType)
+        public static CharParam Create(Vector3 position, PlayerType playerType)
         {
             var retMe = Pool<CharParam>.Allocate();
-
-            retMe.ID = entityID;
+            
             retMe.m_RespawnPos = position;
             retMe.PlayerType = playerType;
 
             return retMe;
+        }
+        public static void Recycle(ref CharParam param)
+        {
+            Pool<CharParam>.Recycle(param);
+
+            param = null;
         }
         #endregion
         
@@ -46,22 +49,26 @@
             }
         }
 
-        public override void SetAI()
+        public override GameObject LoadAsset()
         {
-            switch (PlayerType)
-            {
-                case PlayerType.Test:
+            var assetFactory = AssetFactory.Instance;
+            var entityManager = EntityManager.Instance;
 
-                    break;
-                default:
-                    throw new Exception(GameConst.InvalidEntityType);
-            }
+            var obj = assetFactory.LoadChar(PlayerType);
+            obj.transform.position = Position;
+            return obj;
+        }
+        public override void SetAI(Entity entity)
+        {
+            var aiManager = AIManager.Instance;
+
         }
 
         #region IPoolable
         public override void Recycle()
         {
             m_RespawnPos = Vector3.zero;
+
             base.Recycle();
         }
         #endregion
