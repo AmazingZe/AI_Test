@@ -10,7 +10,7 @@
         public const int CharTypeMask = 7 << CharTypeOffset;
         #region Pools
         
-        public static CharParam Create(Vector3 position, PlayerType playerType)
+        public static CharParam Create(Vector3 position, CharType playerType)
         {
             var retMe = Pool<CharParam>.Allocate();
             
@@ -35,12 +35,12 @@
         {
             get { return m_RespawnPos; }
         }
-        public PlayerType PlayerType
+        public CharType PlayerType
         {
             get
             {
                 int retMe = m_Params & CharTypeMask;
-                return (PlayerType)retMe;
+                return (CharType)retMe;
             }
             private set
             {
@@ -60,7 +60,7 @@
         }
         public override void SetAI(Entity entity)
         {
-            var aiManager = AIManager.Instance;
+            var steerManager = SteerManager.Instance;
 
         }
 

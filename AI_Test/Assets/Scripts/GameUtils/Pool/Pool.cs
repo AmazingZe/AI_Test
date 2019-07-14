@@ -21,6 +21,13 @@
 
             Instance._Recycle(item);
         }
+        public static void Recycle(ref T item)
+        {
+            if (ReferenceEquals(item, null)) return;
+
+            Instance._Recycle(item);
+            item = null;
+        }
         #endregion
 
         #region ISingleton_API

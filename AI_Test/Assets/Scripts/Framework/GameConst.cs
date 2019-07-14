@@ -1,7 +1,6 @@
-﻿namespace GameFramework
+﻿public static class GameConst
 {
-    public static class GameConst
-    {
-        public const string InvalidEntityType = "Entity Type Invalid.";
-    }
+    public const string InvalidEntityType = "Entity Type Invalid.";
+
+    public const int DicitionaryInitNum = 10;
 }

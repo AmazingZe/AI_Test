@@ -3,9 +3,8 @@
     using System;
     using System.Collections.Generic;
 
-    using UnityEngine;
-
     using GameUtils;
+    using GameCore;
 
     public sealed class EntityManager : Singleton<EntityManager>
     {
@@ -28,16 +27,13 @@
             param.ID = m_EntityID++;
             switch (type)
             {
-                case EntityType.Bot:
-                    AddBot(param);
-                    break;
                 case EntityType.Trap:
                     AddTrap(param);
                     break;
                 case EntityType.Tool:
                     AddTool(param);
                     break;
-                case EntityType.Player:
+                case EntityType.Char:
                     var buildParam = param as CharParam;
 
                     AddPlayer(buildParam);
@@ -47,19 +43,6 @@
             }
 
             return m_EntityID - 1;
-        }
-        private Entity AddEntity(GameObject obj, int entityID)
-        {
-            var newEntity = Pool<Entity>.Allocate();
-
-            newEntity.ID = entityID;
-            newEntity.Transform = obj.transform;
-
-            m_Entities.Add(entityID, newEntity);
-
-            m_Scene.AddObject(obj, entityID);
-
-            return newEntity;
         }
         public void RemoveEntity(int id)
         {
@@ -78,7 +61,8 @@
         private void AddPlayer(CharParam param)
         {
             var obj =  param.LoadAsset();
-            var entity = AddEntity(obj, param.ID);
+            var entity = CharEntity.Create(param.ID, CharType.Test);
+            //Todo: ETQ.
 
             param.SetAI(entity);
 

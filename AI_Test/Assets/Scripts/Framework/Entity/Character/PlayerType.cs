@@ -1,6 +1,6 @@
 ﻿namespace GameFramework
 {
-    public enum PlayerType
+    public enum CharType
     {
         Test,
 

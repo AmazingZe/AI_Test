@@ -34,11 +34,12 @@
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                EntityManager.Instance.CreateEntity(EntityType.Player,
+                EntityManager.Instance.CreateEntity(EntityType.Char,
                                CharParam.Create(new Vector3(0, 0.5f, 0),
-                                                PlayerType.Test));
+                                                CharType.Test));
             }
 
+            SteerManager.Instance.Update(totalTime, deltaTime);
             EntityManager.Update(totalTime, deltaTime);
         }
         public override void OnExit()

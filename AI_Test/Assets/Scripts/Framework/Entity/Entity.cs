@@ -1,44 +1,50 @@
 ﻿namespace GameFramework
 {
-    using UnityEngine;
+    using System.Collections.Generic;
 
     using GameUtils;
+    using GameCore.AI;
 
-    public class Entity : IPoolable
+    public abstract class Entity : IPoolable
     {
         public const int EntityNotInScene = -1;
 
         #region Properties
         private int m_Id;
-
-        private Transform m_Transform;
-        #endregion
-
         public int ID
         {
             get { return m_Id; }
             set { m_Id = value; }
         }
-        public Transform Transform
+
+        private EntityType m_EntityType;
+        public EntityType EntityType
         {
-            get { return m_Transform; }
-            set { m_Transform = value; }
+            get { return m_EntityType; }
+            set { m_EntityType = value; }
         }
 
+        private List<int> m_Neighbors;
+        public List<int> Neighbors
+        {
+            get { return m_Neighbors; }
+            set { m_Neighbors = value; }
+        }
+
+        public BlackBoard BBdata;
+        #endregion
+        
         #region IPoolable_API
-        public void Recycle()
+        public virtual void Recycle()
         {
             m_Id = EntityNotInScene;
-
-            m_Transform = null;
         }
         #endregion
     }
 
     public enum EntityType
     {
-        Player,
-        Bot,
+        Char,
         Tool,
         Trap
     }
