@@ -117,7 +117,7 @@
             }
         }
 
-        public void Query(MoveAgent agent, )
+        public void Query(MoveAgent agent)
         {
 
         }
