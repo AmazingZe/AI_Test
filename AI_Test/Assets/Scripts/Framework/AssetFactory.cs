@@ -11,23 +11,15 @@
     {
         private const string PrefabPath = "Prefabs/";
 
-        private Dictionary<EntityType, Dictionary<int, UnityEngine.Object>> m_Prefabs;
+        private Dictionary<string, UnityEngine.Object> m_CharPrefabs;
 
-        public GameObject LoadChar(CharType type)
+        public GameObject LoadChar(string prefabPath)
         {
             UnityEngine.Object instantiateMe;
-            var prefabPool = m_Prefabs[EntityType.Char];
-            if (!prefabPool.TryGetValue((int)type, out instantiateMe))
+            if (!m_CharPrefabs.TryGetValue(prefabPath, out instantiateMe))
             {
-                switch (type)
-                {
-                    case CharType.Test:
-                        instantiateMe = Resources.Load<UnityEngine.Object>(PrefabPath + "Test_Prefab");
-                        break;
-                    default:
-                        throw new Exception(GameConst.InvalidEntityType);
-                }
-                prefabPool.Add((int)type, instantiateMe);
+                instantiateMe = Resources.Load<UnityEngine.Object>(PrefabPath + prefabPath);
+                m_CharPrefabs.Add(prefabPath, instantiateMe);
             }
             GameObject retMe = MonoBehaviour.Instantiate(instantiateMe) as GameObject;
             return retMe;
@@ -37,10 +29,7 @@
         private AssetFactory() { }
         public override void OnInit()
         {
-            m_Prefabs = new Dictionary<EntityType, Dictionary<int, UnityEngine.Object>>();
-            System.Array values = System.Enum.GetValues(typeof(EntityType));
-            foreach (var value in values)
-                m_Prefabs.Add((EntityType)value, new Dictionary<int, UnityEngine.Object>());
+            m_CharPrefabs = new Dictionary<string, UnityEngine.Object>();
         }
         protected override void _OnRelease()
         {

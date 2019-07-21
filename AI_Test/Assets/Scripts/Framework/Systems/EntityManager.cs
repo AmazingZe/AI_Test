@@ -2,9 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-
+    
     using GameUtils;
-    using GameCore;
 
     public sealed class EntityManager : Singleton<EntityManager>
     {
@@ -12,78 +11,74 @@
         private static int m_EntityID = 0;
 
         #region Properties
-        private Scene m_Scene;
         private Dictionary<int, Entity> m_Entities;
 
+        private List<int> m_RemoveBuffer;
+        private List<Entity> m_AddBuffer;
+
+        private Scene m_CurScene;
         public Scene CurScene
         {
-            set { m_Scene = value; }
+            get { return m_CurScene; }
+            set { m_CurScene = value; }
         }
+
+        private Action<int> m_OnEntityRemove;
+        public Action<int> OnEntityRemove { get { return m_OnEntityRemove; } }
         #endregion
 
-        #region Public_API
-        public int CreateEntity(EntityType type, BaseParam param)
+        public void Update(float totalTime, float deltaTime)
         {
-            param.ID = m_EntityID++;
-            switch (type)
+            UpdateEnitity();
+
+
+        }
+        private void UpdateEnitity()
+        {
+            int removeLen = m_RemoveBuffer.Count;
+            for (int i = 0; i < removeLen; i++)
             {
-                case EntityType.Trap:
-                    AddTrap(param);
-                    break;
-                case EntityType.Tool:
-                    AddTool(param);
-                    break;
-                case EntityType.Char:
-                    var buildParam = param as CharParam;
+                int index = m_RemoveBuffer[i];
+                Entity entity;
+                if (!m_Entities.TryGetValue(index, out entity))
+                    throw new IndexOutOfRangeException();
 
-                    AddPlayer(buildParam);
-                    break;
-                default:
-                    throw new Exception(GameConst.InvalidEntityType);
+                m_Entities.Remove(index);
+                Entity.Recycle(entity);
             }
+            m_RemoveBuffer.Clear();
 
-            return m_EntityID - 1;
+            int addLen = m_AddBuffer.Count;
+            for (int i = 0; i < addLen; i++)
+            {
+                var entity = m_AddBuffer[i];
+                int index = entity.ID;
+                if(m_Entities.ContainsKey(index))
+                    throw new IndexOutOfRangeException("Index Already Exists");
+
+                m_Entities.Add(index, entity);
+            }
+            m_AddBuffer.Clear();
+        }
+
+        public void AddEntity(string prefabPath)
+        {
+            var obj = AssetFactory.Instance.LoadChar(prefabPath);
+            Entity addMe = Entity.Create(m_EntityID++, obj);
+            m_AddBuffer.Add(addMe);
         }
         public void RemoveEntity(int id)
         {
-
-
-            m_Scene.RemoveObject(id);
+            m_RemoveBuffer.Add(id);
+            m_OnEntityRemove.Invoke(id);
         }
-        
-        public static void Update(float totalTime, float deltaTime)
+        public Entity GetEntity(int id)
         {
-            Instance._Update(totalTime, deltaTime);
-        }
-        #endregion
-        
-        // Logic-Entity
-        private void AddPlayer(CharParam param)
-        {
-            var obj =  param.LoadAsset();
-            var entity = CharEntity.Create(param.ID, CharType.Test);
-            //Todo: ETQ.
+            Entity retMe;
+            if(!m_Entities.TryGetValue(id, out retMe))
+                throw new IndexOutOfRangeException();
 
-            param.SetAI(entity);
-
-            CharParam.Recycle(ref param);
-        }
-        private void AddBot(object param)
-        {
-
-        }
-        private void AddTrap(object param)
-        {
-
-        }
-        private void AddTool(object param)
-        {
-
-        }
-
-        private void _Update(float totalTime, float deltaTime)
-        {
-
+            return retMe;
         }
 
         #region Singleton_API
@@ -91,14 +86,19 @@
         public override void OnInit()
         {
             m_Entities = new Dictionary<int, Entity>(InitNum);
+
+            m_RemoveBuffer = new List<int>();
+            m_AddBuffer = new List<Entity>();
         }
         protected override void _OnRelease()
         {
+            m_RemoveBuffer.Clear();
+            m_AddBuffer.Clear();
+
             m_Entities.Clear();
 
             base._OnRelease();
         }
         #endregion
-        
     }
 }
