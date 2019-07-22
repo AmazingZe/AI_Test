@@ -2,8 +2,6 @@
 {
     using UnityEngine;
 
-    using System.Collections.Generic;
-
     public sealed class Scene_Test : Scene
     {
         #region Properties

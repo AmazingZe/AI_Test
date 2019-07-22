@@ -1,10 +1,8 @@
-﻿namespace GameRuntime
+﻿namespace GamePlay
 {
     using GameFramework;
 
     using UnityEngine;
-
-    using System.Collections.Generic;
 
     public class GameLoop : MonoBehaviour
     {

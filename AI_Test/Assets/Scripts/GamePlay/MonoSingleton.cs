@@ -1,4 +1,4 @@
-﻿namespace GameRuntime
+﻿namespace GamePlay
 {
     using UnityEngine;
 

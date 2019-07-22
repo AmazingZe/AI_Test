@@ -61,11 +61,13 @@
             m_AddBuffer.Clear();
         }
 
-        public void AddEntity(string prefabPath)
+        public int AddEntity(string prefabPath)
         {
-            var obj = AssetFactory.Instance.LoadChar(prefabPath);
+            var obj = AssetFactory.Instance.LoadPrefab(prefabPath);
             Entity addMe = Entity.Create(m_EntityID++, obj);
             m_AddBuffer.Add(addMe);
+
+            return m_EntityID - 1;
         }
         public void RemoveEntity(int id)
         {

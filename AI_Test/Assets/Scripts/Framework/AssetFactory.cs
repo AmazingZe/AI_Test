@@ -13,7 +13,7 @@
 
         private Dictionary<string, UnityEngine.Object> m_CharPrefabs;
 
-        public GameObject LoadChar(string prefabPath)
+        public GameObject LoadPrefab(string prefabPath)
         {
             UnityEngine.Object instantiateMe;
             if (!m_CharPrefabs.TryGetValue(prefabPath, out instantiateMe))
