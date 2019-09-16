@@ -1,26 +1,27 @@
 ﻿namespace GameEngine
 {
+    using UnityEngine;
+
     using GameInterface;
 
-    public sealed class AvatarMgr : IAvatarMgr
+    public class ResourceLoader : IResourceLoader
     {
+        private static string _PrefabRootPath = "Prefabs/";
+
         #region Singleton
         public override void OnInit()
         {
-            
+
         }
         public override void OnRelease()
         {
-            
+
         }
         #endregion
 
-        public override IAvatar CreateAvatar(string prefabPath)
+        public override GameObject LoadPrefab(string prefabPath)
         {
-            Avatar retMe;
-
-
-            return retMe;
+            
         }
     }
 }
