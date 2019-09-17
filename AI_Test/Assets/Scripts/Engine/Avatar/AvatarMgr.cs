@@ -1,5 +1,7 @@
 ﻿namespace GameEngine
 {
+    using UnityEngine;
+
     using GameInterface;
 
     public sealed class AvatarMgr : IAvatarMgr
@@ -17,9 +19,9 @@
 
         public override IAvatar CreateAvatar(string prefabPath)
         {
-            Avatar retMe;
-
-
+            var fbx = ResourceLoader.Instance.LoadPrefab(prefabPath);
+            Avatar retMe = new Avatar();
+            retMe.Init(fbx);
             return retMe;
         }
     }
