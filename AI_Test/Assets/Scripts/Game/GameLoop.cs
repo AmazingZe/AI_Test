@@ -1,6 +1,5 @@
 ﻿namespace GamePlay
 {
-    using System;
     using UnityEngine;
 
     using GameEngine;
@@ -30,6 +29,9 @@
             m_TotalTime += Time.deltaTime;
             scene.Update(m_TotalTime, Time.deltaTime);
         }
-
+        private void FixedUpdate()
+        {
+            scene.FixedUpdate();
+        }
     }
 }

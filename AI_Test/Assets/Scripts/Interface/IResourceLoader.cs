@@ -18,6 +18,6 @@
             }
         }
 
-        public abstract GameObject LoadPrefab(string prefabPath);
+        public abstract UnityEngine.Object Load(string prefabPath);
     }
 }

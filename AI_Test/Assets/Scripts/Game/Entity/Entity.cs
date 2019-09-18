@@ -7,7 +7,7 @@
         public Entity() { }
         public void Init()
         {
-            m_Avatar = IAvatarMgr.Instance.CreateAvatar();
+            
         }
 
         private IAvatar m_Avatar;

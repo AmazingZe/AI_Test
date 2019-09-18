@@ -9,12 +9,12 @@
     {
         private static string _PrefabRootPath = "Prefabs/";
 
-        private Dictionary<string, GameObject> m_PrefabPool;
+        private Dictionary<int, Object> m_PrefabPool;
 
         #region Singleton
         public override void OnInit()
         {
-            m_PrefabPool = new Dictionary<string, GameObject>(1);
+            m_PrefabPool = new Dictionary<int, Object>(1);
         }
         public override void OnRelease()
         {
@@ -22,18 +22,18 @@
         }
         #endregion
 
-        public override GameObject LoadPrefab(string prefabPath)
+        public override Object Load(string prefabPath)
         {
             string tempPath = _PrefabRootPath + prefabPath;
-            GameObject target;
-            if(!m_PrefabPool.TryGetValue(tempPath, out target))
+            int hashCode = tempPath.GetHashCode();
+            Object target;
+            if(!m_PrefabPool.TryGetValue(hashCode, out target))
             {
-                target = Resources.Load<GameObject>(tempPath);
-                m_PrefabPool[tempPath] = target;
+                target = Resources.Load(tempPath);
+                m_PrefabPool[hashCode] = target;
             }
-
-            GameObject retMe = MonoBehaviour.Instantiate<GameObject>(target);
-            return retMe;
+            return target;
         }
+
     }
 }

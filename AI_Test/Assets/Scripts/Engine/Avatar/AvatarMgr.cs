@@ -1,5 +1,6 @@
 ﻿namespace GameEngine
 {
+    using System.Collections.Generic;
     using UnityEngine;
 
     using GameInterface;
@@ -17,12 +18,17 @@
         }
         #endregion
 
-        public override IAvatar CreateAvatar(string prefabPath)
+        public override IAvatar GetAvatar(string prefabPath)
         {
-            var fbx = ResourceLoader.Instance.LoadPrefab(prefabPath);
+            var fbx = ResourceLoader.Instance.Load(prefabPath) as GameObject;
             Avatar retMe = new Avatar();
-            retMe.Init(fbx);
+            retMe.animator = fbx.GetComponent<Animator>();
+            retMe.transform = fbx.transform;
             return retMe;
+        }
+        public override void RecycleAvatar(IAvatar avatar)
+        {
+            
         }
     }
 }

@@ -7,28 +7,53 @@
 
     public class GameScene : Singleton<GameScene>
     {
-        private GameEvent<float, float> m_Doupdate;
-
         private GameScene() { }
-
-        public void Update(float totalTime, float deltaTime)
-        {
-            m_Doupdate.Invoke(totalTime, deltaTime);
-        }
-
         public override void Init()
         {
             m_Doupdate = new GameEvent<float, float>();
-            m_Doupdate.AddListener(DoUpdate);
         }
         public override void Release()
         {
 
         }
 
-        private void DoUpdate(float totalTime, float deltaTime)
+        #region Update
+        private GameEvent<float, float> m_Doupdate;
+        public GameEvent<float, float> DoUpdate
         {
-            Debug.Log("DoUpdate");
+            get { return m_Doupdate; }
         }
+        public void Update(float totalTime, float deltaTime)
+        {
+            IInputMgr.Instance.Update(totalTime, deltaTime);
+
+            m_Doupdate.Invoke(totalTime, deltaTime);
+        }
+        public void FixedUpdate()
+        {
+
+        }
+        #endregion
+
+        #region Entity-interface
+        private Entity m_MainChar;
+        public Entity MainChar
+        {
+            get { return m_MainChar; }
+            set { m_MainChar = value; }
+        }
+
+        public void AddChar(CharType type)
+        {
+
+        }
+
+        private void UpdateEntity()
+        {
+            // Todo: Update Main Char From InputMgr
+
+
+        }
+        #endregion
     }
 }

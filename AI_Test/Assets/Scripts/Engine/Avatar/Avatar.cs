@@ -7,10 +7,9 @@
     public class Avatar : IAvatar
     {
         public Avatar() { }
-        public void Init(GameObject obj)
+        public void Recycle()
         {
-            m_Animator = obj.GetComponent<Animator>();
-            m_Transform = obj.transform;
+
         }
 
         #region Animator
@@ -18,6 +17,7 @@
         public Animator animator
         {
             get { return m_Animator; }
+            set { m_Animator = value; }
         }
 
         public void SetParamBool(int paramId, bool value)
@@ -32,6 +32,11 @@
 
         #region LocoMotion
         private Transform m_Transform;
+        public Transform transform
+        {
+            get { return m_Transform; }
+            set { m_Transform = value; }
+        }
         public Vector3 position
         {
             get { return m_Transform.position; }

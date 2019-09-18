@@ -17,6 +17,7 @@
             }
         }
 
-        public abstract IAvatar CreateAvatar(string prefabPath);
+        public abstract IAvatar GetAvatar(string prefabPath);
+        public abstract void RecycleAvatar(IAvatar avatar);
     }
 }
