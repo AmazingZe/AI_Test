@@ -15,6 +15,7 @@
                 var addMe = new SingleAxis();
                 addMe.axis = (VirtualAxis)i;
                 addMe.offset = 0;
+                m_VirtualAxises[i] = addMe;
             }
         }
         public override void OnRelease()
@@ -40,9 +41,40 @@
             return m_VirtualAxises[(int)axis].offset;
         }
 
+        #region Mouse
+        public override bool GetMouseDown(int button)
+        {
+            return Input.GetMouseButton(button);
+        }
+        public override bool GetMouseUp(int button)
+        {
+            return Input.GetMouseButtonUp(button);
+        }
+        public override bool GetMouse(int button)
+        {
+            return Input.GetMouseButton(button);
+        }
+        #endregion
+
+        #region Key
+        public override bool GetKeyDown(KeyCode keyCode)
+        {
+            return Input.GetKeyDown(keyCode);
+        }
+        public override bool GetKeyUp(KeyCode keyCode)
+        {
+            return Input.GetKeyUp(keyCode);
+        }
+        public override bool GetKey(KeyCode keyCode)
+        {
+            return Input.GetKey(keyCode);
+        }
+        #endregion
+
         public override void Update(float totalTime, float deltaTime)
         {
-            fb_changed = lr_changed = false;
+            fb_changed = false;
+            lr_changed = false;
 
             #region WASD Listener
             if (Input.GetKeyDown(KeyCode.W))
@@ -91,38 +123,44 @@
             #endregion
 
             #region Update Axises
-            if (f_Down && b_Down)
+            if (fb_changed)
             {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
-            }
-            else if (!f_Down && !b_Down)
-            {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
-            }
-            else if (f_Down)
-            {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 1;
-            }
-            else if (b_Down)
-            {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = -1;
+                if (f_Down && b_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
+                }
+                else if (!f_Down && !b_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
+                }
+                else if (f_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 1;
+                }
+                else if (b_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = -1;
+                }
             }
 
-            if (l_Down && r_Down)
+            if (lr_changed)
             {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
-            }
-            else if (!l_Down && !r_Down)
-            {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
-            }
-            else if (l_Down)
-            {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = -1;
-            }
-            else if (r_Down)
-            {
-                m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 1;
+                if (l_Down && r_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
+                }
+                else if (!l_Down && !r_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
+                }
+                else if (l_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = -1;
+                }
+                else if (r_Down)
+                {
+                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 1;
+                }
             }
             #endregion
         }

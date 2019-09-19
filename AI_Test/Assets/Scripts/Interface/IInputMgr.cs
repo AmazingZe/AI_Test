@@ -2,6 +2,8 @@
 {
     using System;
 
+    using UnityEngine;
+
     public enum VirtualAxis
     {
         AxisX,
@@ -40,6 +42,13 @@
         public abstract void Update(float totalTime, float deltaTime);
 
         public abstract float GetAxis(VirtualAxis axis);
-        
+
+        public abstract bool GetKeyUp(KeyCode keyCode);
+        public abstract bool GetKeyDown(KeyCode keyCode);
+        public abstract bool GetKey(KeyCode keyCode);
+
+        public abstract bool GetMouseDown(int button);
+        public abstract bool GetMouseUp(int button);
+        public abstract bool GetMouse(int button);
     }
 }

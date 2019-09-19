@@ -1,15 +1,24 @@
 ﻿namespace GamePlay
 {
+    using UnityEngine;
+
     using GameInterface;
 
     public class Entity
     {
         public Entity() { }
-        public void Init()
-        {
-            
-        }
 
         private IAvatar m_Avatar;
+
+        #region Animation
+
+        #endregion
+
+        #region Locomotion
+        public virtual void MoveTo(Vector3 des)
+        {
+
+        }
+        #endregion
     }
 }

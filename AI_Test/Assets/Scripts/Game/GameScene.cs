@@ -11,6 +11,8 @@
         public override void Init()
         {
             m_Doupdate = new GameEvent<float, float>();
+
+            IInputMgr.Instance.OnInit();
         }
         public override void Release()
         {
@@ -28,6 +30,8 @@
             IInputMgr.Instance.Update(totalTime, deltaTime);
 
             m_Doupdate.Invoke(totalTime, deltaTime);
+
+            Debug.Log("Axis Z is " + IInputMgr.Instance.GetAxis(VirtualAxis.AxisZ));
         }
         public void FixedUpdate()
         {

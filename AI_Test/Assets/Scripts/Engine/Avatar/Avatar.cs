@@ -12,7 +12,7 @@
 
         }
 
-        #region Animator
+        #region Animation
         private Animator m_Animator;
         public Animator animator
         {
