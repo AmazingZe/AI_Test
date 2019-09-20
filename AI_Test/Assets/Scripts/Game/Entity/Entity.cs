@@ -20,5 +20,9 @@
 
         }
         #endregion
+
+        #region StateMachine
+        private IStateMachine m_StatemMachine;
+        #endregion
     }
 }
