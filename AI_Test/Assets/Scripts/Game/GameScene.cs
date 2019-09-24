@@ -10,7 +10,8 @@
         private GameScene() { }
         public override void Init()
         {
-            m_Doupdate = new GameEvent<float, float>();
+            m_Doupdate = new GameEvent();
+            m_DoFixedUpdate = new GameEvent();
 
             IInputMgr.Instance.OnInit();
         }
@@ -20,33 +21,33 @@
         }
 
         #region Update
-        private GameEvent<float, float> m_Doupdate;
-        public GameEvent<float, float> DoUpdate
+        private GameEvent m_Doupdate;
+        public GameEvent DoUpdate
         {
             get { return m_Doupdate; }
         }
+
+        private GameEvent m_DoFixedUpdate;
+        public GameEvent DoFixedUpdate
+        {
+            get { return m_DoFixedUpdate; }
+        }
+
         public void Update(float totalTime, float deltaTime)
         {
             IInputMgr.Instance.Update(totalTime, deltaTime);
 
-            m_Doupdate.Invoke(totalTime, deltaTime);
+            EntityMgr.Instance.Update(totalTime, deltaTime);
 
-            Debug.Log("Axis Z is " + IInputMgr.Instance.GetAxis(VirtualAxis.AxisZ));
+            m_Doupdate?.Invoke();
         }
         public void FixedUpdate()
         {
-
+            m_DoFixedUpdate?.Invoke();
         }
         #endregion
 
         #region Entity-interface
-        private Entity m_MainChar;
-        public Entity MainChar
-        {
-            get { return m_MainChar; }
-            set { m_MainChar = value; }
-        }
-
         public void AddChar(CharType type)
         {
 
@@ -58,6 +59,10 @@
 
 
         }
+        #endregion
+
+        #region Main Character
+
         #endregion
     }
 }

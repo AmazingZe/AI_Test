@@ -6,6 +6,12 @@
 
     public class Entity
     {
+        private int m_EntityId;
+        public int EntityId
+        {
+            get { return m_EntityId; }
+        }
+
         public Entity() { }
 
         private IAvatar m_Avatar;

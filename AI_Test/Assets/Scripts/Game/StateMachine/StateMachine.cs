@@ -4,8 +4,6 @@
 
     public class StateMachine<Host> : IStateMachine where Host : Entity
     {
-        // Todo: Pool
-
         private Host m_Host;
         private Dictionary<int, State<Host>> m_States;
         private State<Host> m_CurState;
