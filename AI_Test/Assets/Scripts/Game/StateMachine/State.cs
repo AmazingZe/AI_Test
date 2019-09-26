@@ -2,7 +2,9 @@
 {
     public abstract class State<Host> where Host : Entity
     {
-        private Host m_Host;
+        protected Host host;
+
+        public abstract int stateId { get; }
 
         public void OnEnter(State<Host> prev)
         {

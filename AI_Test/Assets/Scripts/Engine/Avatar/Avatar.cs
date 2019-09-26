@@ -19,15 +19,6 @@
             get { return m_Animator; }
             set { m_Animator = value; }
         }
-
-        public void SetParamBool(int paramId, bool value)
-        {
-            m_Animator.SetBool(paramId, value);
-        }
-        public void SetParamFloat(int paramId, float value)
-        {
-            m_Animator.SetFloat(paramId, value);
-        }
         #endregion
 
         #region LocoMotion

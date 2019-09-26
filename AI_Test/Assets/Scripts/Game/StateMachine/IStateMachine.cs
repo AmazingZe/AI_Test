@@ -9,4 +9,11 @@
         public abstract int Update();
         public abstract void SendMsg(int msgId);
     }
+
+    public enum StateID
+    {
+        Idle,
+
+        Count,
+    }
 }

@@ -17,7 +17,7 @@
         }
         public override void Release()
         {
-
+            IInputMgr.Instance.OnRelease();
         }
 
         #region Update

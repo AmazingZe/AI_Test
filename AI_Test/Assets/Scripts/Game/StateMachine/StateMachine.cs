@@ -9,17 +9,15 @@
         private State<Host> m_CurState;
         private State<Host> m_PrevState;
 
-        public StateMachine() { }
-        public StateMachine<Host> Init(Host host)
+        public StateMachine(Host host) 
         {
             m_Host = host;
-
-            return this;
         }
 
         public StateMachine<Host> AddState(State<Host> state)
         {
-
+            if (!m_States.ContainsKey(state.stateId))
+                m_States.Add(state.stateId, state);
 
             return this;
         }
@@ -39,7 +37,9 @@
                 m_CurState.OnLeave(nextState);
             m_PrevState = m_CurState;
             m_CurState = nextState;
-            m_CurState.OnEnter(m_PrevState);
+
+            if (m_CurState != null)
+                m_CurState.OnEnter(m_PrevState);
         }
         public override int Update()
         {
