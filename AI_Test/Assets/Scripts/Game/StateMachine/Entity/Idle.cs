@@ -18,6 +18,7 @@
         public override int OnUpdate()
         {
 
+            return stateId;
         }
 
         public override void SendMsg(int msgId)

@@ -6,8 +6,10 @@
     {
         private Host m_Host;
         private Dictionary<int, State<Host>> m_States;
+
         private State<Host> m_CurState;
         private State<Host> m_PrevState;
+        private int m_CurStateId;
 
         public StateMachine(Host host) 
         {
@@ -47,7 +49,7 @@
 
             int nextId = m_CurState.OnUpdate();
 
-            if (nextId == 0) return 0;
+            
 
             ChangeToState(nextId);
             return nextId;
