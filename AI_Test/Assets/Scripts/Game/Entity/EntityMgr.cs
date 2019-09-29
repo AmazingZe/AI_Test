@@ -3,12 +3,14 @@
     using System.Collections.Generic;
 
     using GameUtils;
+    using GameInterface;
 
     public class EntityMgr : Singleton<EntityMgr>
     {
+        public static int InvalidEntityId = -1;
         public static Dictionary<int, string> _charFbxPathDic = new Dictionary<int, string>
         {
-            { (int)CharType.Test, "Prefabs/Character/TestBot.prefab"},
+            { (int)CharType.Test, "Character/TestBot"},
         };
 
         private Dictionary<int, Entity> m_Entities;
@@ -27,6 +29,7 @@
         private EntityMgr()
         {
             m_EntityId = 0;
+            m_MainCharacterId = InvalidEntityId;
 
             m_Entities = new Dictionary<int, Entity>(GameConst.ContainerCapacity);
             m_EntitiesToBeAdded = new List<Entity>(GameConst.ContainerCapacity);
@@ -51,16 +54,40 @@
         }
         #endregion
 
-        public static Entity GetEntity(CharType type)
+        #region MainChar
+        private int m_MainCharacterId;
+        public Entity MainCharacter
         {
-            //Todo: Pool
-            Entity retMe = new Entity();
-            retMe.SetModel(_charFbxPathDic[(int)type]);
-            return retMe;
+            get
+            {
+                Entity retMe;
+                if (m_Entities.TryGetValue(m_MainCharacterId, out retMe))
+                    return retMe;
+
+                return null;
+            }
         }
+        
+        private Entity SetMainCharWithId(int entityId)
+        {
+            if (m_MainCharacterId != InvalidEntityId)
+                m_Entities[m_MainCharacterId].IsMainChar = false;
+
+            Entity retMe;
+            if (m_Entities.TryGetValue(entityId, out retMe))
+            {
+                m_MainCharacterId = entityId;
+                retMe.IsMainChar = true;
+                return retMe;
+            }
+
+            return null;
+        }
+        #endregion
 
         public void Update(float totalTime, float deltaTime)
         {
+            #region Add & Remove
             foreach (int index in m_EntitiesToBeRemoved)
             {
                 Entity removeMe;
@@ -74,12 +101,23 @@
 
             foreach (var entity in m_EntitiesToBeAdded)
             {
-                if (m_Entities[entity.EntityId] != null)
+                if (m_Entities.ContainsKey(entity.EntityId))
                     continue;
 
                 m_Entities.Add(entity.EntityId, entity);
             }
             m_EntitiesToBeAdded.Clear();
+            #endregion
+
+            #region MainChar
+            var MainChar = MainCharacter;
+            if (MainChar != null)
+            {
+                float offset = IInputMgr.Instance.GetAxis(VirtualAxis.AxisZ);
+                MainChar.Position += offset * MainChar.Speed * MainChar.Direction;
+            }
+
+            #endregion
 
             foreach (var item in m_Entities)
             {
@@ -88,17 +126,24 @@
 
         }
 
-        public void AddEntity(Entity addMe)
+        public Entity CreateEntity(CharType type, bool isMainChar = false)
         {
-            if (addMe == null) return;
+            //Todo: Pool
+            Entity retMe = new Entity();
+            retMe.SetModel(_charFbxPathDic[(int)type]);
+            
+            if (isMainChar)
+            {
+                int index = AddEntity(retMe);
+                SetMainCharWithId(index);
+            }
+            else
+                AddEntityDelay(retMe);
 
-            addMe.EntityId = m_EntityId++;
-            m_EntitiesToBeAdded.Add(addMe);
-        }
-        public void RemoveEntity(int removeMe)
-        {
 
+            return retMe;
         }
+        public void RemoveEntity(int removeMe) { m_EntitiesToBeRemoved.Add(removeMe); }
         public Entity GetEntityWithId(int entityId)
         {
             Entity retMe;
@@ -106,6 +151,25 @@
                 return retMe;
 
             return null;
+        }
+
+        private int AddEntityDelay (Entity addMe)
+        {
+            if (addMe == null) return InvalidEntityId;
+
+            addMe.EntityId = m_EntityId++;
+            m_EntitiesToBeAdded.Add(addMe);
+
+            return m_EntityId - 1;
+        }
+        private int AddEntity(Entity addMe)
+        {
+            if (addMe == null) return InvalidEntityId;
+
+            addMe.EntityId = m_EntityId++;
+            m_Entities.Add(addMe.EntityId, addMe);
+
+            return m_EntityId - 1;
         }
     }
 }

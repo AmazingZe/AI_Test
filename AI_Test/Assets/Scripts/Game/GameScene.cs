@@ -14,6 +14,8 @@
             m_DoFixedUpdate = new GameEvent();
 
             IInputMgr.Instance.OnInit();
+            IAvatarMgr.Instance.OnInit();
+            IResourceLoader.Instance.OnInit();
         }
         public override void Release()
         {
@@ -38,6 +40,9 @@
             IInputMgr.Instance.Update(totalTime, deltaTime);
 
             EntityMgr.Instance.Update(totalTime, deltaTime);
+
+            if (IInputMgr.Instance.GetKeyDown(KeyCode.Space))
+                EntityMgr.Instance.CreateEntity(CharType.Test, true);
 
             m_Doupdate?.Invoke();
         }

@@ -22,8 +22,9 @@
         {
             var fbx = ResourceLoader.Instance.Load(prefabPath) as GameObject;
             Avatar retMe = new Avatar();
-            retMe.animator = fbx.GetComponent<Animator>();
-            retMe.transform = fbx.transform;
+            var obj = MonoBehaviour.Instantiate<GameObject>(fbx);
+            retMe.animator = obj.GetComponent<Animator>();
+            retMe.transform = obj.transform;
             return retMe;
         }
         public override void RecycleAvatar(IAvatar avatar)
