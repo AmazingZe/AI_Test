@@ -31,7 +31,7 @@
         }
         private void FixedUpdate()
         {
-            scene.FixedUpdate();
+            scene.FixedUpdate(m_TotalTime, Time.deltaTime);
         }
     }
 }

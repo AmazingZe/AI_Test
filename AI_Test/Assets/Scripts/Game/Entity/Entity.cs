@@ -16,7 +16,7 @@
         public Entity()
         {
             m_EntityId = EntityMgr.InvalidEntityId;
-            Speed = 1;
+            Speed = 0.5f;
 
             m_OnPFSucceed = new GameEvent();
             m_OnPFPartial = new GameEvent();
@@ -24,6 +24,8 @@
         }
 
         private IAvatar m_Avatar;
+        public IAvatar Avatar { get { return m_Avatar; } }
+
         public void SetModel(string prefabPath)
         {
             m_Avatar = IAvatarMgr.Instance.GetAvatar(prefabPath);

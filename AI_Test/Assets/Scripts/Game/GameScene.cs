@@ -7,19 +7,22 @@
 
     public class GameScene : Singleton<GameScene>
     {
-        private GameScene() { }
-        public override void Init()
+        private GameScene()
         {
             m_Doupdate = new GameEvent();
             m_DoFixedUpdate = new GameEvent();
-
+        }
+        public override void Init()
+        {
             IInputMgr.Instance.OnInit();
+            CameraHelper.Instance.Init();
+
             IAvatarMgr.Instance.OnInit();
             IResourceLoader.Instance.OnInit();
         }
         public override void Release()
         {
-            IInputMgr.Instance.OnRelease();
+            
         }
 
         #region Update
@@ -39,14 +42,24 @@
         {
             IInputMgr.Instance.Update(totalTime, deltaTime);
 
+            CameraHelper.Instance.Update(totalTime, deltaTime);
+
+            #region Client Mgr
+
             EntityMgr.Instance.Update(totalTime, deltaTime);
+            
+            #endregion
 
             if (IInputMgr.Instance.GetKeyDown(KeyCode.Space))
-                EntityMgr.Instance.CreateEntity(CharType.Test, true);
+            {
+                var entity = EntityMgr.Instance.CreateEntity(CharType.Test, true);
+                CameraHelper.Instance.LockOnTarget = entity;
+            }
+                
 
             m_Doupdate?.Invoke();
         }
-        public void FixedUpdate()
+        public void FixedUpdate(float totalTime, float deltaTime)
         {
             m_DoFixedUpdate?.Invoke();
         }

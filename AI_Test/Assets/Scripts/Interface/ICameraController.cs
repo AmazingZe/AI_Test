@@ -21,7 +21,13 @@
         }
 
         public abstract Camera MainCamera { get; }
+        public abstract Transform LockedTarget { get; set; }
 
-        
+        public abstract float Distance { get; set; }
+
+        public abstract float TransitionTime { get; set; }
+        public abstract float TranslationSpeed { get; set; }
+
+        public abstract void Update(float totalTime, float deltaTime);
     }
 }

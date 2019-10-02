@@ -15,7 +15,7 @@
                 var addMe = new SingleAxis();
                 addMe.axis = (VirtualAxis)i;
                 addMe.offset = 0;
-                m_VirtualAxises[i] = addMe;
+                m_VirtualAxises.Add(i, addMe);
             }
         }
         public override void OnRelease()
@@ -25,7 +25,7 @@
         #endregion
 
         #region Properties
-        private Dictionary<int, SingleAxis> m_VirtualAxises = new Dictionary<int, SingleAxis>();
+        private Dictionary<int, SingleAxis> m_VirtualAxises = new Dictionary<int, SingleAxis>((int)VirtualAxis.Count);
 
         private bool lr_changed = false;
         private bool l_Down = false;
@@ -34,6 +34,9 @@
         private bool fb_changed = false;
         private bool f_Down = false;
         private bool b_Down = false;
+
+        private float f_MouseOffsetX = 0;
+        private float f_MouseOffsetY = 0;
         #endregion
 
         public override float GetAxis(VirtualAxis axis)
@@ -76,7 +79,7 @@
             fb_changed = false;
             lr_changed = false;
 
-            #region WASD Listener
+            #region WASD Update Phase
             if (Input.GetKeyDown(KeyCode.W))
             {
                 fb_changed = true;
@@ -120,9 +123,7 @@
                 lr_changed = true;
                 r_Down = false;
             }
-            #endregion
 
-            #region Update Axises
             if (fb_changed)
             {
                 if (f_Down && b_Down)
@@ -161,6 +162,19 @@
                 {
                     m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 1;
                 }
+            }
+            #endregion
+
+            #region Mouse Update Phase
+            m_VirtualAxises[(int)VirtualAxis.MouseAxisX].offset = 0;
+            m_VirtualAxises[(int)VirtualAxis.MouseAxisY].offset = 0;
+            if (Input.GetMouseButton(1))
+            {
+                f_MouseOffsetX = Input.GetAxis("Mouse X");
+                f_MouseOffsetY = Input.GetAxis("Mouse Y");
+
+                m_VirtualAxises[(int)VirtualAxis.MouseAxisX].offset = f_MouseOffsetX;
+                m_VirtualAxises[(int)VirtualAxis.MouseAxisY].offset = f_MouseOffsetY;
             }
             #endregion
         }
