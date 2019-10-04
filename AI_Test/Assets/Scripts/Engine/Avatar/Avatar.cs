@@ -33,6 +33,18 @@
             get { return m_Transform.position; }
             set { m_Transform.position = value; }
         }
+        public Vector3 forward
+        {
+            get { return m_Transform.forward; }
+            set
+            {
+                var curRot = m_Transform.rotation;
+                var dir = m_Transform.forward;
+                var rot = Quaternion.FromToRotation(m_Transform.forward, value);
+
+                m_Transform.rotation = rot * curRot;
+            }
+        }
         #endregion
     }
 }

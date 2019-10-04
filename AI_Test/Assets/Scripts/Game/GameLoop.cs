@@ -15,7 +15,9 @@
         private void Awake()
         {
             m_TotalTime = 0;
-            
+
+            DontDestroyOnLoad(gameObject);
+
             scene = GameScene.Instance;
         }
         private void OnApplicationQuit()
@@ -26,6 +28,8 @@
 
         private void Update()
         {
+            if (scene == null) return;
+
             m_TotalTime += Time.deltaTime;
             scene.Update(m_TotalTime, Time.deltaTime);
         }

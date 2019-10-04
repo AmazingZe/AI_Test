@@ -21,12 +21,15 @@
         }
 
         public abstract Camera MainCamera { get; }
-        public abstract Transform LockedTarget { get; set; }
+        public abstract Transform LockOnTarget { get; set; }
+        
+        public abstract float AngleOffsetX { get; set; }
+        public abstract float AngleOffsetY { get; set; }
+        public abstract float AngleX { get; set; }
+        public abstract float AngleY { get; set; }
 
+        public abstract Vector3 Offset { get; }
         public abstract float Distance { get; set; }
-
-        public abstract float TransitionTime { get; set; }
-        public abstract float TranslationSpeed { get; set; }
 
         public abstract void Update(float totalTime, float deltaTime);
     }

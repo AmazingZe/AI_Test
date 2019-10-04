@@ -52,13 +52,13 @@
         public float Speed;
         public Vector3 Position
         {
-            get { return m_Avatar == null ? Vector3.zero : m_Avatar.transform.position; }
-            set { m_Avatar.transform.position = value; }
+            get { return m_Avatar == null ? Vector3.zero : m_Avatar.position; }
+            set { m_Avatar.position = value; }
         }
-        public Vector3 Direction
+        public Vector3 Forward
         {
-            get { return m_Avatar == null ? Vector3.zero : m_Avatar.transform.forward; }
-            set { m_Avatar.transform.rotation = Quaternion.Euler(value); }
+            get { return m_Avatar == null ? Vector3.zero : m_Avatar.forward; }
+            set { m_Avatar.forward = value; }
         }
 
         public virtual void MoveTo(Vector3 des)

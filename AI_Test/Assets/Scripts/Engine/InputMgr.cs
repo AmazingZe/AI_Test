@@ -148,19 +148,19 @@
             {
                 if (l_Down && r_Down)
                 {
-                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
+                    m_VirtualAxises[(int)VirtualAxis.AxisX].offset = 0;
                 }
                 else if (!l_Down && !r_Down)
                 {
-                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 0;
+                    m_VirtualAxises[(int)VirtualAxis.AxisX].offset = 0;
                 }
                 else if (l_Down)
                 {
-                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = -1;
+                    m_VirtualAxises[(int)VirtualAxis.AxisX].offset = -1;
                 }
                 else if (r_Down)
                 {
-                    m_VirtualAxises[(int)VirtualAxis.AxisZ].offset = 1;
+                    m_VirtualAxises[(int)VirtualAxis.AxisX].offset = 1;
                 }
             }
             #endregion
@@ -176,6 +176,7 @@
                 m_VirtualAxises[(int)VirtualAxis.MouseAxisX].offset = f_MouseOffsetX;
                 m_VirtualAxises[(int)VirtualAxis.MouseAxisY].offset = f_MouseOffsetY;
             }
+            m_VirtualAxises[(int)VirtualAxis.MouseAxisZ].offset = Input.GetAxis("Mouse ScrollWheel");
             #endregion
         }
     }

@@ -14,18 +14,24 @@
 
     public class CameraController : ICameraController
     {
-
         #region Singleton
+        public CameraController()
+        {
+            m_Offset = new Vector3(0, 1, -11).normalized;
+        }
         public override void OnInit()
         {
             m_MainCam = Camera.main;
+
+            m_MainCam.transform.position = m_Offset;
         }
         public override void OnRelease()
         {
-
+            m_Target = null;
         }
         #endregion
 
+        #region Properties
         private Camera m_MainCam;
         public override Camera MainCamera
         {
@@ -35,54 +41,11 @@
                     m_MainCam = Camera.main;
 
                 return m_MainCam;
-            }   
-        }
-        
-        private float m_Radius = 10;
-        public override float Distance
-        {
-            get { return m_Radius; }
-            set { m_Radius = value; }
-        }
-
-        public override void Update(float totalTime, float deltaTime)
-        {
-            if (m_Target == null) return;
-
-            //TraceTargetPhase();
-            //UpdateCamPosPhase();
-
-            UpdateInput();
-            UpdateRotation();
-        }
-
-        #region Update Lock-On Target Phase
-        private CamTransitionMode m_CamTranMode = CamTransitionMode.LockSpeed;
-
-        private float m_TranslationRate = 1 / (60 * 1);
-        public override float TransitionTime
-        {
-            get { return 1 / (m_TranslationRate * 60); }
-            set
-            {
-                m_TranslationRate = 1 / (value * 60);
-                m_CamTranMode = CamTransitionMode.LockTime;
-            }
-        }
-
-        private float m_TranslationSpeed = 1;
-        public override float TranslationSpeed
-        {
-            get { return m_TranslationSpeed; }
-            set
-            {
-                m_TranslationSpeed = value;
-                m_CamTranMode = CamTransitionMode.LockSpeed;
             }
         }
 
         private Transform m_Target;
-        public override Transform LockedTarget
+        public override Transform LockOnTarget
         {
             get { return m_Target; }
             set
@@ -91,112 +54,123 @@
                     m_Target = value;
             }
         }
+        #endregion
 
-        private Vector3 m_Offset = new Vector3(0, 5, -10);
-        private Vector3 m_Delta;
-        private Vector3 m_NextPos;
-
-        private bool m_StopFlag = false;
-
-        private void TraceTargetPhase()
+        #region Transition
+        private Vector3 m_Offset;
+        public override Vector3 Offset
         {
-            Vector3 camPos = m_MainCam.transform.position;
-            m_NextPos = m_Target.position + m_Offset;
-
-            float offset = (m_NextPos - camPos).sqrMagnitude;
-            if (offset == 0)
-            {
-                m_StopFlag = true;
-                m_Delta = Vector3.zero;
-            }
-            else if (offset < 0.25)
-            {
-                m_StopFlag = false;
-                m_Delta = m_NextPos - camPos;
-            }
-            else
-            {
-                m_StopFlag = false;
-                switch (m_CamTranMode)
-                {
-                    case CamTransitionMode.LockSpeed:
-                        m_Delta = (m_NextPos - camPos).normalized * m_TranslationSpeed;
-                        break;
-                    case CamTransitionMode.LockTime:
-                        m_Delta = (m_NextPos - camPos) * m_TranslationRate;
-                        break;
-                    default:
-                        m_Delta = (m_NextPos - camPos);
-                        break;
-                }
-            }
-            
+            get { return m_Offset; }
         }
+
         private void UpdateCamPosPhase()
         {
-            if (m_StopFlag) return;
-
-            m_MainCam.transform.position += m_Delta;
+            m_MainCam.transform.position = m_Target.position + m_Offset;
         }
         #endregion
 
-        #region Update Rotation Phase
-        private float m_RotationScale = 0.3f;
+        #region Rotation
+        private float m_AngleOffsetX;
+        public override float AngleOffsetX
+        {
+            get { return m_AngleOffsetX; }
+            set { m_AngleOffsetX = value; }
+        }
+        private float m_AngleOffsetY;
+        public override float AngleOffsetY
+        {
+            get { return m_AngleOffsetY; }
+            set { m_AngleOffsetY = value; }
+        }
 
         private float m_AngleX;
-        private float m_AngleY;
-
-        private void UpdateInput()
+        public override float AngleX
         {
-            var offsetX = IInputMgr.Instance.GetAxis(VirtualAxis.MouseAxisX);
-            var offsetY = -IInputMgr.Instance.GetAxis(VirtualAxis.MouseAxisY);
-
-            if(Mathf.Abs(offsetX) > Mathf.Abs(offsetY))
+            get { return m_AngleX; }
+            set
             {
-                var tanX = offsetX * m_RotationScale / m_Radius;
-                m_AngleX = Mathf.Atan(tanX) * Mathf.Rad2Deg;
-                m_AngleY = 0;
+                SetToAngle(value, m_AngleY);
+                m_AngleX = value;
             }
-            else
-            {
-                var tanY = offsetY * m_RotationScale / m_Radius;
-                m_AngleY = Mathf.Atan(tanY) * Mathf.Rad2Deg;
-                m_AngleX = 0;
-            }
-
-            //var tanX = offsetX * m_RotationScale / m_Radius;
-            //var tanY = offsetY * m_RotationScale / m_Radius;
-
-            //m_AngleX = Mathf.Atan(tanX) * Mathf.Rad2Deg;
-            //m_AngleY = Mathf.Atan(tanY) * Mathf.Rad2Deg;
         }
+
+        private float m_AngleY;
+        public override float AngleY
+        {
+            get { return m_AngleY; }
+            set
+            {
+                SetToAngle(m_AngleX, value);
+                m_AngleY = value;
+            }
+        }
+
         private void UpdateRotation()
         {
             Vector3 center = m_Target.position;
 
-            if (m_AngleX != 0)
-                RotateAround(center, Vector3.up, m_AngleX);
+            RotateAround(center, Vector3.up, m_AngleOffsetX);
+            RotateAround(center, m_MainCam.transform.right, m_AngleOffsetY);
 
-            if (m_AngleY != 0)
-                RotateAround(center, Vector3.right, m_AngleY);
+            m_AngleX += m_AngleOffsetX;
+            m_AngleY += m_AngleOffsetY;
         }
-        #endregion
 
         private void RotateAround(Vector3 center, Vector3 axis, float angle)
         {
+            if (angle == 0) return;
+
             var rot = Quaternion.AngleAxis(angle, axis);
-            Vector3 dir = m_MainCam.transform.position - center;
-            Vector3 newDir = rot * dir;
-            m_MainCam.transform.position = newDir + center;
+            m_Offset = rot * m_Offset;
 
-            var curRot = m_MainCam.transform.rotation;
-
-            Vector3 newUp = rot * Vector3.up;
-            Quaternion q2 = Quaternion.FromToRotation(newUp, Vector3.up);
-
-            m_MainCam.transform.rotation = q2 * rot;
+            var myRot = m_MainCam.transform.rotation;
+            m_MainCam.transform.rotation = rot * myRot;
         }
 
-        private bool IsInRange(Vector3 from, Vector3 to) { return (from - to).sqrMagnitude <= m_Radius * m_Radius; }
+        private void SetToAngle(float angleX, float angleY)
+        {
+            float deltaAngleX = angleX - m_AngleX;
+            float deltaAngleY = angleY - m_AngleY;
+
+            Quaternion curRot;
+
+            if(deltaAngleX != 0)
+            {
+                curRot = m_MainCam.transform.rotation;
+                var rotX = Quaternion.AngleAxis(deltaAngleX, Vector3.up);
+                m_Offset = rotX * m_Offset;
+                m_MainCam.transform.rotation = rotX * curRot;
+            }
+            if(deltaAngleY != 0)
+            {
+                curRot = m_MainCam.transform.rotation;
+                var rotY = Quaternion.AngleAxis(deltaAngleY, m_MainCam.transform.right);
+                m_Offset = rotY * m_Offset;
+                m_MainCam.transform.rotation = rotY * curRot;
+            }
+        }
+        #endregion
+
+        #region Zoom
+        private float m_Radius = 1;
+        public override float Distance
+        {
+            get { return m_Radius; }
+            set
+            {
+                m_Radius = value;
+                m_Offset = m_Offset.normalized * m_Radius;
+            }
+        }
+        #endregion
+
+        public override void Update(float totalTime, float deltaTime)
+        {
+            if (m_Target == null) return;
+
+            UpdateRotation();
+
+            UpdateCamPosPhase();
+        }
     }
 }

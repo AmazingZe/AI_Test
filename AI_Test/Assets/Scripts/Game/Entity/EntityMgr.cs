@@ -108,39 +108,21 @@
             }
             m_EntitiesToBeAdded.Clear();
             #endregion
-
-            #region MainChar
-            var MainChar = MainCharacter;
-            if (MainChar != null)
-            {
-                float offset = IInputMgr.Instance.GetAxis(VirtualAxis.AxisZ);
-                MainChar.Position += offset * MainChar.Speed * MainChar.Direction;
-            }
-
-            #endregion
-
+            
             foreach (var item in m_Entities)
             {
 
             }
-
         }
 
-        public Entity CreateEntity(CharType type, bool isMainChar = false)
+        public Entity CreateEntity(CharType type)
         {
             //Todo: Pool
             Entity retMe = new Entity();
             retMe.SetModel(_charFbxPathDic[(int)type]);
             
-            if (isMainChar)
-            {
-                int index = AddEntity(retMe);
-                SetMainCharWithId(index);
-            }
-            else
-                AddEntityDelay(retMe);
-
-
+            AddEntityDelay(retMe);
+            
             return retMe;
         }
         public void RemoveEntity(int removeMe) { m_EntitiesToBeRemoved.Add(removeMe); }

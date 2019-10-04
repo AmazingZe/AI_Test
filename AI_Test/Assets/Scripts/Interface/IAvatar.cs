@@ -7,5 +7,6 @@
         Animator animator { get; set; }
         Transform transform { get; set; }
         Vector3 position { get; set; }
+        Vector3 forward { get; set; }
     }
 }
