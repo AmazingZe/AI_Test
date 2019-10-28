@@ -53,6 +53,8 @@
 
             CameraHelper.Instance.Update(totalTime, deltaTime);
 
+            LocomotionMgr.Instance.Update(totalTime, deltaTime);
+
             m_Doupdate?.Invoke();
         }
         public void FixedUpdate(float totalTime, float deltaTime)

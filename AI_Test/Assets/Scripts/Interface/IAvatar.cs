@@ -2,6 +2,8 @@
 {
     using UnityEngine;
 
+    using GameUtils;
+
     public interface IAvatar : IPoolable
     {
         Animator animator { get; set; }

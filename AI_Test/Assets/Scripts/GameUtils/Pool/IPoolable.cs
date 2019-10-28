@@ -1,4 +1,4 @@
-﻿namespace GameInterface
+﻿namespace GameUtils
 {
     public interface IPoolable
     {

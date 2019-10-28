@@ -38,14 +38,14 @@
             var InputMgr = IInputMgr.Instance;
             var CamHelper = CameraHelper.Instance;
 
-            float offsetZ = InputMgr.GetAxis(VirtualAxis.AxisZ);
-            m_Entity.Position += offsetZ * m_Entity.Speed * CamHelper.CameraForward;
-            if (offsetZ != 0)
-                m_Entity.Forward = CamHelper.CameraForward;
-            float offsetX = InputMgr.GetAxis(VirtualAxis.AxisX);
-            m_Entity.Position += offsetX * m_Entity.Speed * CamHelper.CameraRight;
-            if (offsetX != 0)
-                m_Entity.Forward = CamHelper.CameraRight;
+            //float offsetZ = InputMgr.GetAxis(VirtualAxis.AxisZ);
+            //m_Entity.Position += offsetZ * m_Entity.Speed * CamHelper.CameraForward;
+            //if (offsetZ != 0)
+            //    m_Entity.Forward = CamHelper.CameraForward;
+            //float offsetX = InputMgr.GetAxis(VirtualAxis.AxisX);
+            //m_Entity.Position += offsetX * m_Entity.Speed * CamHelper.CameraRight;
+            //if (offsetX != 0)
+            //    m_Entity.Forward = CamHelper.CameraRight;
         }
     }
 }

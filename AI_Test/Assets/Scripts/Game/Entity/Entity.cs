@@ -2,9 +2,12 @@
 {
     using UnityEngine;
 
+    using System.Collections.Generic;
+
+    using GameUtils;
     using GameInterface;
 
-    public class Entity
+    public class Entity : IPoolable
     {
         private int m_EntityId;
         public int EntityId
@@ -16,27 +19,35 @@
         public Entity()
         {
             m_EntityId = EntityMgr.InvalidEntityId;
-            Speed = 0.5f;
+            m_Speed = 0.5f;
+
+            m_RouteNodes = new List<Vector3>();
 
             m_OnPFSucceed = new GameEvent();
             m_OnPFPartial = new GameEvent();
             m_OnPFFailed = new GameEvent();
         }
 
-        private IAvatar m_Avatar;
-        public IAvatar Avatar { get { return m_Avatar; } }
-
         public void SetModel(string prefabPath)
         {
             m_Avatar = IAvatarMgr.Instance.GetAvatar(prefabPath);
         }
 
-        private bool m_IsMainChar;
-        public bool IsMainChar
+        #region Properties
+        private IAvatar m_Avatar;
+        public IAvatar Avatar { get { return m_Avatar; } }
+
+        public Vector3 Position
         {
-            get { return m_IsMainChar; }
-            set { m_IsMainChar = value; }
+            get { return m_Avatar == null ? Vector3.zero : m_Avatar.position; }
+            set { m_Avatar.position = value; }
         }
+        public Vector3 Forward
+        {
+            get { return m_Avatar == null ? Vector3.zero : m_Avatar.forward; }
+            set { m_Avatar.forward = value; }
+        }
+        #endregion
 
         //Interaction
         private IStateMachine m_StatemMachine;
@@ -49,40 +60,20 @@
         private GameEvent m_OnPFFailed;
         public GameEvent OnPathFindingFailed { get { return m_OnPFFailed; } }
 
-        public float Speed;
-        public Vector3 Position
-        {
-            get { return m_Avatar == null ? Vector3.zero : m_Avatar.position; }
-            set { m_Avatar.position = value; }
-        }
-        public Vector3 Forward
-        {
-            get { return m_Avatar == null ? Vector3.zero : m_Avatar.forward; }
-            set { m_Avatar.forward = value; }
-        }
+        private float m_Speed;
+        private Vector3 m_NextPos;
+
+        private List<Vector3> m_RouteNodes;
 
         public virtual void MoveTo(Vector3 des)
         {
 
         }
-        
-        private void OnPFSucceed()
-        {
-            m_OnPFSucceed.Invoke();
-        }
-        private void OnPFPartial()
-        {
-            m_OnPFPartial.Invoke();
-        }
-        private void OnPFFailed()
-        {
-            m_OnPFFailed.Invoke();
-        }
         #endregion
 
 
 
-        public void OnRelease()
+        public void Recycle()
         {
             IAvatarMgr.Instance.RecycleAvatar(m_Avatar);
             m_Avatar = null;

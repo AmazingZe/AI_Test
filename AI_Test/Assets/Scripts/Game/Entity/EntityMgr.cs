@@ -67,22 +67,6 @@
                 return null;
             }
         }
-        
-        private Entity SetMainCharWithId(int entityId)
-        {
-            if (m_MainCharacterId != InvalidEntityId)
-                m_Entities[m_MainCharacterId].IsMainChar = false;
-
-            Entity retMe;
-            if (m_Entities.TryGetValue(entityId, out retMe))
-            {
-                m_MainCharacterId = entityId;
-                retMe.IsMainChar = true;
-                return retMe;
-            }
-
-            return null;
-        }
         #endregion
 
         public void Update(float totalTime, float deltaTime)
@@ -93,7 +77,7 @@
                 Entity removeMe;
                 if (m_Entities.TryGetValue(index, out removeMe))
                 {
-                    removeMe.OnRelease();
+                    removeMe.Recycle();
                     m_Entities.Remove(index);
                 }
             }
@@ -118,7 +102,7 @@
         public Entity CreateEntity(CharType type)
         {
             //Todo: Pool
-            Entity retMe = new Entity();
+            Entity retMe = Pool<Entity>.Allocate();
             retMe.SetModel(_charFbxPathDic[(int)type]);
             
             AddEntityDelay(retMe);
